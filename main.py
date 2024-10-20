@@ -41,4 +41,6 @@ def main(page: ft.Page):
         )
 
 
+print('asas')
+
 ft.app(main)
