@@ -1,6 +1,10 @@
 import flet as ft
 from tkinter import filedialog
 
+print('API google')
+
+
+
 def main(page: ft.Page):
     page.title = 'New App'
     page.theme_mode = 'dark'
@@ -40,8 +44,5 @@ def main(page: ft.Page):
        ft.Row([selectArq])
         )
 
-
-print('asas')
-print('asasasasasasas')
 
 ft.app(main)
