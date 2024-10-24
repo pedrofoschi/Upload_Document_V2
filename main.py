@@ -1,5 +1,43 @@
 import flet as ft
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from googleapiclient.http import MediaFileUpload
 from tkinter import filedialog
+# python3 -m pip install google-auth
+# python3 -m pip install google-api-python-client
+# python3 -m pip install google_auth_oauthlib
+SCOPES = ['https://www.googleapis.com/auth/drive']
+SERVICE_ACCOUNT_FILE = 'C:\\Users\\Ricardo R Lima\\Documents\\prog\\Upload_Document_V2\\uploaddocumentv2-01911cd8058b.json'
+PARENT_FOLDER_ID = "1dmqBpdV0GwKTJS4gYLR26jYSkbQsfd1q"
+
+def autenticador():
+    creds = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    return creds
+
+
+def upload(file_path):
+    credencial = autenticador()
+    service = build('drive', 'v3', credentials=credencial)
+
+    # Obtém o nome do arquivo a partir do caminho
+    file_name = file_path.split('/')[-1]
+
+    file_metadata = {
+        'name': file_name,  # Definindo o nome do arquivo corretamente
+        'parents': [PARENT_FOLDER_ID]
+    }
+
+    media = MediaFileUpload(file_path)  # Preparando o arquivo para upload
+
+    file = service.files().create(
+        body=file_metadata,
+        media_body=media
+    ).execute()
+
+    print(f"Upload do arquivo {file_name} concluído com sucesso!")
+
+# Exemplo de uso
+upload('C:\\Users\\Ricardo R Lima\\Documents\\prog\\Upload_Document_V2\\asce.jpg')
 
 def main(page: ft.Page):
     page.title = 'New App'
@@ -12,30 +50,26 @@ def main(page: ft.Page):
         }
 
     # Efeito SnackBar
-    def Snackbar(message: str, color: str = "green"):
-            page.snack_bar = ft.SnackBar(ft.Text(message, color="White",style="Poppins"))
+    def Snackbar(color: str = "green"):
+            page.snack_bar = ft.SnackBar(ft.Text("Teste Pedro napa", color="White",style="Poppins"))
             page.snack_bar.open = True
             page.snack_bar.bgcolor = color
             page.update()
-
+    Snackbar()
     def selecione(e):
-        arquivo = ft.FilePicker()
-        if not arquivo:
-            Snackbar =('📁 Arquivos não selecionados !', 'Red')
-        else:
-            Snackbar =('📁 Arquivos selecionados com sucesso !','Green')
-    
-
+        arquivo = filedialog.askopenfilename()
+        print(arquivo)
     selectArq = ft.ElevatedButton(
         "Teste",
         on_click=selecione,
+
         style=ft.ButtonStyle(
             color='white',
             bgcolor='Black',
             overlay_color='Red'
         )
     )
-
+    
     page.add(
        ft.Row([selectArq])
         )
